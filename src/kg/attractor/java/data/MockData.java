@@ -11,9 +11,35 @@ public class MockData {
     public static List<Book> getBooks() {
         List<Book> books = new ArrayList<>();
 
-        books.add(new Book(1, "Clean Code", "Robert Martin", "/images/1.jpg", false, null));
-        books.add(new Book(2, "Effective Java", "Joshua Bloch", "/images/2.jpg", true, 1));
-        books.add(new Book(3, "Spring in Action", "Craig Walls", "/images/3.jpg", false, null));
+        books.add(new Book(
+                1,
+                "Clean Code",
+                "Robert Martin",
+                "Book about writing clean and maintainable code.",
+                "/images/1.jpg",
+                false,
+                null
+        ));
+
+        books.add(new Book(
+                2,
+                "Effective Java",
+                "Joshua Bloch",
+                "Collection of Java best practices.",
+                "/images/2.jpg",
+                true,
+                1
+        ));
+
+        books.add(new Book(
+                3,
+                "Spring in Action",
+                "Craig Walls",
+                "Guide to Spring Framework.",
+                "/images/3.jpg",
+                false,
+                null
+        ));
 
         return books;
     }
