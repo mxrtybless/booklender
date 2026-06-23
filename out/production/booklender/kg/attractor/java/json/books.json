@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Clean Code",
+    "author": "Robert Martin",
+    "description": "Book about clean code",
+    "image": "/images/1.jpg",
+    "issued": false,
+    "issuedTo": null
+  },
+  {
+    "id": 2,
+    "title": "Effective Java",
+    "author": "Joshua Bloch",
+    "description": "Java best practices",
+    "image": "/images/2.jpg",
+    "issued": true,
+    "issuedTo": 1
+  }
+]
