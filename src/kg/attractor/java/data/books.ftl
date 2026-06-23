@@ -7,18 +7,35 @@
 
 <h1>Books list</h1>
 
-<#list books as book>
-    <div>
-        <h3>${book.title}</h3>
-        <p>${book.author}</p>
+<table border="1">
 
-        <#if book.issued>
-            <p style="color:red;">Issued</p>
-        <#else>
-            <p style="color:green;">Available</p>
-        </#if>
-    </div>
-</#list>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Status</th>
+    </tr>
+
+    <#list books as book>
+
+        <tr>
+
+            <td>
+                <a href="/book?id=${book.id}">
+                    ${book.title}
+                </a>
+            </td>
+
+            <td>${book.author}</td>
+
+            <td>
+                ${book.issued?string("Issued", "Available")}
+            </td>
+
+        </tr>
+
+    </#list>
+
+</table>
 
 </body>
 </html>
