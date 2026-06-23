@@ -1,0 +1,29 @@
+package kg.attractor.java.data;
+
+import kg.attractor.java.model.Book;
+import kg.attractor.java.model.Employee;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MockData {
+
+    public static List<Book> getBooks() {
+        List<Book> books = new ArrayList<>();
+
+        books.add(new Book(1, "Clean Code", "Robert Martin", "/images/1.jpg", false, null));
+        books.add(new Book(2, "Effective Java", "Joshua Bloch", "/images/2.jpg", true, 1));
+        books.add(new Book(3, "Spring in Action", "Craig Walls", "/images/3.jpg", false, null));
+
+        return books;
+    }
+
+    public static List<Employee> getEmployees() {
+        List<Employee> employees = new ArrayList<>();
+
+        employees.add(new Employee(1, "Ivan Ivanov", new ArrayList<>(), new ArrayList<>()));
+        employees.add(new Employee(2, "Petr Petrov", new ArrayList<>(), new ArrayList<>()));
+
+        return employees;
+    }
+}
