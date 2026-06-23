@@ -20,8 +20,9 @@ public class Lesson44Server extends BasicServer {
         super(host, port);
         registerGet("/sample", this::freemarkerSampleHandler);
         registerGet("/books", this::booksHandler);
-
         registerGet("/book", this::bookHandler);
+
+        registerGet("/employees", this::employeesHandler);
     }
 
     private static Configuration initFreeMarker() {
@@ -65,6 +66,15 @@ public class Lesson44Server extends BasicServer {
         model.put("book", book);
 
         renderTemplate(exchange, "book.ftl", model);
+    }
+
+    private void employeesHandler(HttpExchange exchange) {
+        var employees = MockData.getEmployees();
+
+        var model = new HashMap<String, Object>();
+        model.put("employees", employees);
+
+        renderTemplate(exchange, "employees.ftl", model);
     }
 
     protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
