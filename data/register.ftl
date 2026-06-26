@@ -3,48 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-
     <link rel="stylesheet" href="/css/forms.css">
 </head>
 <body>
 
-<h1>Employee registration</h1>
+<main>
+    <form action="/register" method="post">
+        <fieldset>
+            <div class="legend">
+                <p>Employee registration</p>
+            </div>
 
-<form action="/register" method="post">
+            <#if message??>
+                <p>
+                    <b>${message}</b>
+                </p>
+            </#if>
 
-    <label>Email</label><br>
-    <input
-            type="email"
-            name="email"
-            required
-    >
-    <br><br>
+            <div class="form-element">
+                <label for="email">Email</label>
+                <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="employee email"
+                        value="${email!""}"
+                        required
+                        autofocus
+                >
+            </div>
 
-    <label>Name</label><br>
-    <input
-            type="text"
-            name="name"
-            required
-    >
-    <br><br>
+            <div class="form-element">
+                <label for="name">Name</label>
+                <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        placeholder="employee name"
+                        value="${name!""}"
+                        required
+                >
+            </div>
 
-    <label>Password</label><br>
-    <input
-            type="password"
-            name="password"
-            required
-    >
-    <br><br>
+            <div class="form-element">
+                <label for="password">Password</label>
+                <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="password"
+                        required
+                >
+            </div>
 
-    <button type="submit">
-        Register
-    </button>
+            <div class="hr-line">
+                <span class="details">create account</span>
+            </div>
 
-</form>
+            <div class="form-element">
+                <button class="register-button" type="submit">Register</button>
+            </div>
+        </fieldset>
+    </form>
 
-<br>
-
-<a href="/login">Login</a>
+    <p style="text-align: center;">
+        <a href="/login">Login</a> |
+        <a href="/employees">Employees</a> |
+        <a href="/books">Books</a>
+    </p>
+</main>
 
 </body>
 </html>
