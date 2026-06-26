@@ -12,6 +12,7 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>Email</th>
         <th>Current books</th>
     </tr>
 
@@ -27,6 +28,8 @@
                 </a>
             </td>
 
+            <td>${employee.email}</td>
+
             <td>${employee.currentBooks?size}</td>
 
         </tr>
@@ -37,7 +40,9 @@
 
 <br>
 
-<a href="/books">Books</a>
+<a href="/books">Books</a> |
+<a href="/login">Login</a> |
+<a href="/register">Register</a>
 
 </body>
 </html>
