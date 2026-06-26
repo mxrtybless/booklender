@@ -11,7 +11,7 @@
     <form action="/login" method="post">
         <fieldset>
             <div class="legend">
-                <p>Employee login</p>
+                <p>Welcome!</p>
                 <img src="/images/1.jpg" alt="book" style="display:block; width: 200px; height: 200px;">
             </div>
 
@@ -21,18 +21,12 @@
                 </p>
             </#if>
 
-            <#if message??>
-                <p>
-                    <b>${message}</b>
-                </p>
-            </#if>
-
             <div class="form-element">
-                <label for="email">Email</label>
+                <label for="user-email">email</label>
                 <input
                         type="email"
                         name="email"
-                        id="email"
+                        id="user-email"
                         placeholder="your email"
                         value="${email!""}"
                         required
@@ -41,11 +35,11 @@
             </div>
 
             <div class="form-element">
-                <label for="password">Password</label>
+                <label for="user-password">password</label>
                 <input
                         type="password"
                         name="password"
-                        id="password"
+                        id="user-password"
                         placeholder="your password"
                         required
                 >
@@ -56,13 +50,14 @@
             </div>
 
             <div class="form-element">
-                <button class="register-button" type="submit">Login</button>
+                <button class="register-button" type="submit">Login!</button>
             </div>
         </fieldset>
     </form>
 
     <p style="text-align: center;">
         <a href="/register">Register</a> |
+        <a href="/profile">Profile example</a> |
         <a href="/employees">Employees</a> |
         <a href="/books">Books</a>
     </p>
