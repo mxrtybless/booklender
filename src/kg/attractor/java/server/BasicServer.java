@@ -128,7 +128,7 @@ public abstract class BasicServer {
     }
 
     public static String getContentType(HttpExchange exchange) {
-        return exchange.getResponseHeaders()
+        return exchange.getRequestHeaders()
                 .getOrDefault("Content-Type", List.of("")).get(0);
     }
 

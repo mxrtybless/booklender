@@ -26,7 +26,8 @@ public class Utils {
             return Optional.empty();
         }
 
-        String[] pair = kv.split("=");
+        String[] pair = kv.split("=", 2);
+
         if (pair.length != 2) {
             return Optional.empty();
         }
