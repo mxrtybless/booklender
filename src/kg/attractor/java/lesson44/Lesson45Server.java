@@ -7,6 +7,7 @@ import kg.attractor.java.server.RouteHandler;
 import kg.attractor.java.server.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class Lesson45Server extends Lesson44Server {
         registerPost("/register", this::registerPost);
         registerGet("/login", this::loginGet);
         registerPost("/login", this::loginPost);
+        registerGet("/profile", this::profileGet);
     }
 
     private void registerGet(HttpExchange exchange) {
@@ -53,7 +55,7 @@ public class Lesson45Server extends Lesson44Server {
     }
 
     private void loginGet(HttpExchange exchange) {
-        renderLoginPage(exchange, null, null, "");
+        renderLoginPage(exchange, null, "");
     }
 
     private void loginPost(HttpExchange exchange) {
@@ -68,18 +70,25 @@ public class Lesson45Server extends Lesson44Server {
             renderLoginPage(
                     exchange,
                     "Авторизоваться не удалось, неверный идентификатор или пароль.",
-                    null,
                     email
             );
             return;
         }
 
-        renderLoginPage(
-                exchange,
-                null,
-                "Удачный вход. Добро пожаловать, " + employee.getName() + "!",
-                ""
+        renderProfilePage(exchange, employee, true);
+    }
+
+    private void profileGet(HttpExchange exchange) {
+        Employee employee = new Employee(
+                0,
+                "unknown@example.com",
+                "Некий пользователь",
+                "",
+                new ArrayList<>(),
+                new ArrayList<>()
         );
+
+        renderProfilePage(exchange, employee, false);
     }
 
     private void renderRegisterPage(HttpExchange exchange, String message, String email, String name) {
@@ -91,13 +100,20 @@ public class Lesson45Server extends Lesson44Server {
         renderTemplate(exchange, "register.ftl", model);
     }
 
-    private void renderLoginPage(HttpExchange exchange, String error, String message, String email) {
+    private void renderLoginPage(HttpExchange exchange, String error, String email) {
         Map<String, Object> model = new HashMap<>();
         model.put("error", error);
-        model.put("message", message);
         model.put("email", email);
 
         renderTemplate(exchange, "login.ftl", model);
+    }
+
+    private void renderProfilePage(HttpExchange exchange, Employee employee, boolean authorized) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("employee", employee);
+        model.put("authorized", authorized);
+
+        renderTemplate(exchange, "profile.ftl", model);
     }
 
     protected void registerPost(String route, RouteHandler handler) {
