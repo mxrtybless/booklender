@@ -47,8 +47,22 @@ public class MockData {
     public static List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
 
-        employees.add(new Employee(1, "Ivan Ivanov", new ArrayList<>(), new ArrayList<>()));
-        employees.add(new Employee(2, "Petr Petrov", new ArrayList<>(), new ArrayList<>()));
+        employees.add(new Employee(
+                1,
+                "nikita@attractor.com",
+                "Danilov Nikita",
+                "12345abcd",
+                new ArrayList<>(),
+                new ArrayList<>()
+        ));
+        employees.add(new Employee(
+                2,
+                "ivan@attractor.com",
+                "Ivan Smirnov",
+                "password",
+                new ArrayList<>(),
+                new ArrayList<>()
+        ));
 
         return employees;
     }

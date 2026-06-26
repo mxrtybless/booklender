@@ -3,6 +3,7 @@ package kg.attractor.java.lesson44;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import kg.attractor.java.server.ContentType;
@@ -16,6 +17,14 @@ public class Lesson45Server extends Lesson44Server {
         super(host, port);
         registerGet("/login", this::loginGet);
         registerPost("/login", this::loginPost);
+        registerGet("/register", this::registerPageHandler);
+    }
+    private void registerPageHandler(HttpExchange exchange) {
+
+        var model = new HashMap<String, Object>();
+
+        renderTemplate(exchange, "register.ftl", model);
+
     }
 
     private void loginGet(HttpExchange exchange) {
