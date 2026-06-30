@@ -12,8 +12,6 @@
 
     <#if authorized>
         <p><b>Successful login.</b></p>
-    <#else>
-        <p><b>This page was opened directly, so it shows sample user data.</b></p>
     </#if>
 
     <p>
@@ -38,7 +36,9 @@
     <#else>
         <ul>
             <#list employee.currentBooks as book>
-                <li>${book.title}</li>
+                <li>
+                    <a href="/book?id=${book.id}">${book.title}</a> — ${book.author}
+                </li>
             </#list>
         </ul>
     </#if>
@@ -50,7 +50,9 @@
     <#else>
         <ul>
             <#list employee.historyBooks as book>
-                <li>${book.title}</li>
+                <li>
+                    <a href="/book?id=${book.id}">${book.title}</a> — ${book.author}
+                </li>
             </#list>
         </ul>
     </#if>
