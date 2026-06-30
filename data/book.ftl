@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>${book.title}</title>
 </head>
 <body>
 
+<p>
+    <a href="/books">Back to books</a> |
+    <a href="/employees">Employees</a> |
+    <a href="/login">Login</a> |
+    <a href="/register">Register</a>
+</p>
+
 <h1>${book.title}</h1>
+
+<p>
+    <b>ID:</b>
+    ${book.id}
+</p>
 
 <p>
     <b>Author:</b>
@@ -19,22 +32,17 @@
 
 <p>
     <b>Status:</b>
-    ${book.issued?string("Issued", "Available")}
+    ${book.statusText}
 </p>
 
 <p>
-    <b>Employee ID:</b>
-    ${book.issuedTo!"Nobody"}
+    <b>Issued to:</b>
+    <#if employee??>
+        <a href="/employee?id=${employee.id}">${employee.name}</a>
+    <#else>
+        Nobody
+    </#if>
 </p>
-
-<p>
-    <b>Image:</b>
-    ${book.image}
-</p>
-
-<br>
-
-<a href="/books">Back to books</a>
 
 </body>
 </html>

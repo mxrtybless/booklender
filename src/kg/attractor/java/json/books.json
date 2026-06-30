@@ -3,7 +3,7 @@
     "id": 1,
     "title": "Clean Code",
     "author": "Robert Martin",
-    "description": "Book about clean code",
+    "description": "Book about writing clean and maintainable code.",
     "image": "/images/1.jpg",
     "issued": false,
     "issuedTo": null
@@ -12,9 +12,18 @@
     "id": 2,
     "title": "Effective Java",
     "author": "Joshua Bloch",
-    "description": "Java best practices",
+    "description": "Collection of Java best practices.",
     "image": "/images/2.jpg",
     "issued": true,
     "issuedTo": 1
+  },
+  {
+    "id": 3,
+    "title": "Spring in Action",
+    "author": "Craig Walls",
+    "description": "Guide to Spring Framework.",
+    "image": "/images/3.jpg",
+    "issued": false,
+    "issuedTo": null
   }
 ]

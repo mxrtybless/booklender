@@ -1,8 +1,22 @@
 [
   {
     "id": 1,
-    "name": "Ivan Ivanov",
-    "currentBooks": [2],
-    "historyBooks": [1]
+    "email": "nikita@attractor.com",
+    "name": "Danilov Nikita",
+    "password": "12345abcd",
+    "currentBooks": [
+      2
+    ],
+    "historyBooks": [
+      1
+    ]
+  },
+  {
+    "id": 2,
+    "email": "ivan@attractor.com",
+    "name": "Ivan Smirnov",
+    "password": "password",
+    "currentBooks": [],
+    "historyBooks": []
   }
 ]
