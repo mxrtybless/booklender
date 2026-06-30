@@ -37,17 +37,17 @@ public class Lesson45Server extends Lesson44Server {
         if (registered) {
             renderRegisterPage(
                     exchange,
-                    "Удачная регистрация. Теперь сотрудник может войти в систему.",
+                    "Удачная регистрация. Теперь пользователь может войти в систему.",
                     "",
                     ""
             );
             return;
         }
 
-        String message = "Регистрация не удалась. Проверьте данные или используйте другой идентификатор.";
+        String message = "Регистрация не удалась. Проверьте данные и попробуйте снова.";
 
         if (MockData.findEmployeeByEmail(email) != null) {
-            message = "Регистрация не удалась. Пользователь с таким идентификатором уже зарегистрирован.";
+            message = "Пользователь с таким идентификатором уже зарегистрирован.";
         }
 
         renderRegisterPage(exchange, message, email, name);
@@ -68,7 +68,7 @@ public class Lesson45Server extends Lesson44Server {
         if (employee == null) {
             renderLoginPage(
                     exchange,
-                    "Авторизоваться не удалось, неверный идентификатор или пароль.",
+                    "Пользователь не существует или пароль введён неверно.",
                     email
             );
             return;
