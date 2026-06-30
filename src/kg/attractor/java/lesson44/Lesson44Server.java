@@ -6,12 +6,16 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import kg.attractor.java.data.MockData;
+import kg.attractor.java.model.Book;
+import kg.attractor.java.model.Employee;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
+import kg.attractor.java.server.Utils;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
@@ -61,10 +65,17 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void bookHandler(HttpExchange exchange) {
-        var book = MockData.getBooks().get(0);
+        int id = getIdFromQuery(exchange);
+        Book book = MockData.findBookById(id);
+
+        if (book == null) {
+            respond404(exchange);
+            return;
+        }
 
         var model = new HashMap<String, Object>();
         model.put("book", book);
+        model.put("employee", MockData.findEmployeeByBook(book));
 
         renderTemplate(exchange, "book.ftl", model);
     }
@@ -79,12 +90,23 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void employeeHandler(HttpExchange exchange) {
-        var employee = MockData.getEmployees().get(0);
+        int id = getIdFromQuery(exchange);
+        Employee employee = MockData.findEmployeeById(id);
+
+        if (employee == null) {
+            respond404(exchange);
+            return;
+        }
 
         var model = new HashMap<String, Object>();
         model.put("employee", employee);
 
         renderTemplate(exchange, "employee.ftl", model);
+    }
+
+    protected int getIdFromQuery(HttpExchange exchange) {
+        Map<String, String> query = Utils.parseUrlEncoded(exchange.getRequestURI().getRawQuery(), "&");
+        return Utils.parseIntOrDefault(query.get("id"), -1);
     }
 
     protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {

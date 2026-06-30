@@ -3,7 +3,6 @@ package kg.attractor.java.lesson44;
 import com.sun.net.httpserver.HttpExchange;
 import kg.attractor.java.data.MockData;
 import kg.attractor.java.model.Employee;
-import kg.attractor.java.server.RouteHandler;
 import kg.attractor.java.server.Utils;
 
 import java.io.IOException;
@@ -114,9 +113,5 @@ public class Lesson45Server extends Lesson44Server {
         model.put("authorized", authorized);
 
         renderTemplate(exchange, "profile.ftl", model);
-    }
-
-    protected void registerPost(String route, RouteHandler handler) {
-        getRoutes().put("POST " + route, handler);
     }
 }
