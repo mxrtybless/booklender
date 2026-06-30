@@ -9,6 +9,9 @@ public class Book {
     private boolean issued;
     private Integer issuedTo;
 
+    public Book() {
+    }
+
     public Book(int id,
                 String title,
                 String author,
@@ -52,5 +55,17 @@ public class Book {
 
     public Integer getIssuedTo() {
         return issuedTo;
+    }
+
+    public void setIssued(boolean issued) {
+        this.issued = issued;
+    }
+
+    public void setIssuedTo(Integer issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
+    public String getStatusText() {
+        return issued ? "Issued" : "Available";
     }
 }

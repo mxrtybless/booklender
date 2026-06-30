@@ -10,5 +10,13 @@
     "historyBooks": [
       1
     ]
+  },
+  {
+    "id": 2,
+    "email": "ivan@attractor.com",
+    "name": "Ivan Smirnov",
+    "password": "password",
+    "currentBooks": [],
+    "historyBooks": []
   }
 ]

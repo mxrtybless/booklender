@@ -3,7 +3,6 @@ package kg.attractor.java.lesson44;
 import com.sun.net.httpserver.HttpExchange;
 import kg.attractor.java.data.MockData;
 import kg.attractor.java.model.Employee;
-import kg.attractor.java.server.RouteHandler;
 import kg.attractor.java.server.Utils;
 
 import java.io.IOException;
@@ -38,17 +37,17 @@ public class Lesson45Server extends Lesson44Server {
         if (registered) {
             renderRegisterPage(
                     exchange,
-                    "Удачная регистрация. Теперь сотрудник может войти в систему.",
+                    "Удачная регистрация. Теперь пользователь может войти в систему.",
                     "",
                     ""
             );
             return;
         }
 
-        String message = "Регистрация не удалась. Проверьте данные или используйте другой идентификатор.";
+        String message = "Регистрация не удалась. Проверьте данные и попробуйте снова.";
 
         if (MockData.findEmployeeByEmail(email) != null) {
-            message = "Регистрация не удалась. Пользователь с таким идентификатором уже зарегистрирован.";
+            message = "Пользователь с таким идентификатором уже зарегистрирован.";
         }
 
         renderRegisterPage(exchange, message, email, name);
@@ -69,7 +68,7 @@ public class Lesson45Server extends Lesson44Server {
         if (employee == null) {
             renderLoginPage(
                     exchange,
-                    "Авторизоваться не удалось, неверный идентификатор или пароль.",
+                    "Пользователь не существует или пароль введён неверно.",
                     email
             );
             return;
@@ -114,9 +113,5 @@ public class Lesson45Server extends Lesson44Server {
         model.put("authorized", authorized);
 
         renderTemplate(exchange, "profile.ftl", model);
-    }
-
-    protected void registerPost(String route, RouteHandler handler) {
-        getRoutes().put("POST " + route, handler);
     }
 }

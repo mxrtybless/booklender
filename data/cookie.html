@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cookies Sample Page</title>
+</head>
+<body>
+
+<div style="margin-left: 20px;">
+    <h1>
+        Visited ${times}
+        <#if times == 1>
+        time
+        <#else>
+        times
+    </#if>
+    </h1>
+
+    <#if globalVisit??>
+    <h2>
+        Global visit counter ${globalVisit}
+        <#if globalVisit == 1>
+        time
+        <#else>
+        times
+    </#if>
+    until server restart
+    </h2>
+</#if>
+
+<h2>Request cookies</h2>
+
+<#if cookies?? && cookies?size != 0>
+<ul>
+    <#list cookies as name, value>
+    <li>
+        <b>${name}</b> -
+        <span style="background-color: lightgray;">${value}</span>
+    </li>
+</#list>
+</ul>
+<#else>
+<p>No cookies yet. Refresh this page.</p>
+</#if>
+
+<p>
+    <a href="/">Main page</a> |
+    <a href="/books">Books</a> |
+    <a href="/login">Login</a>
+</p>
+</div>
+
+</body>
+</html>

@@ -4,21 +4,36 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Utils {
 
     public static Map<String, String> parseUrlEncoded(String raw, String delimiter) {
+        Map<String, String> params = new HashMap<>();
+
+        if (raw == null || raw.isBlank()) {
+            return params;
+        }
+
         String[] pairs = raw.split(delimiter);
         Stream<Map.Entry<String, String>> stream = Arrays.stream(pairs)
                 .map(Utils::decode)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return stream.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        stream.forEach(entry -> params.put(entry.getKey(), entry.getValue()));
+        return params;
+    }
+
+    public static int parseIntOrDefault(String value, int defaultValue) {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
     private static Optional<Map.Entry<String, String>> decode(String kv) {

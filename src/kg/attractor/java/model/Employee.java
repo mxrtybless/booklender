@@ -11,6 +11,9 @@ public class Employee {
     private List<Book> currentBooks = new ArrayList<>();
     private List<Book> historyBooks = new ArrayList<>();
 
+    public Employee() {
+    }
+
     public Employee(int id,
                     String email,
                     String name,
@@ -22,8 +25,8 @@ public class Employee {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.currentBooks = currentBooks;
-        this.historyBooks = historyBooks;
+        this.currentBooks = currentBooks == null ? new ArrayList<>() : currentBooks;
+        this.historyBooks = historyBooks == null ? new ArrayList<>() : historyBooks;
     }
 
     public int getId() {
@@ -48,5 +51,13 @@ public class Employee {
 
     public List<Book> getHistoryBooks() {
         return historyBooks;
+    }
+
+    public int getCurrentBooksCount() {
+        return currentBooks.size();
+    }
+
+    public int getHistoryBooksCount() {
+        return historyBooks.size();
     }
 }
