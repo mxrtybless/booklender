@@ -1,9 +1,11 @@
 package kg.attractor.java.lesson44;
 
 import com.sun.net.httpserver.HttpExchange;
+import kg.attractor.java.data.MockData;
 import kg.attractor.java.model.Employee;
 import kg.attractor.java.server.Cookie;
 import kg.attractor.java.server.SessionManager;
+import kg.attractor.java.server.Utils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,14 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Lesson46Server extends Lesson45Server {
-    private static final String SESSION_COOKIE_NAME = "sessionId";
-    private static final int SESSION_MAX_AGE = 600;
+    private static final String sessionCookieName = "sessionId";
+    private static final int sessionMaxAge = 600;
 
     private int globalVisitCounter = 0;
 
     public Lesson46Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/cookies", this::cookiesHandler);
+        registerGet("/login", this::loginGet);
+        registerPost("/login", this::loginPost);
+        registerGet("/profile", this::profileGet);
     }
 
     private void cookiesHandler(HttpExchange exchange) {
@@ -31,7 +36,7 @@ public class Lesson46Server extends Lesson45Server {
         globalVisitCounter++;
 
         Cookie<Integer> visitsCookie = Cookie.make(visitCookieName, times);
-        visitsCookie.setMaxAge(SESSION_MAX_AGE);
+        visitsCookie.setMaxAge(sessionMaxAge);
         visitsCookie.setHttpOnly(true);
         setCookie(exchange, visitsCookie);
 
@@ -42,17 +47,81 @@ public class Lesson46Server extends Lesson45Server {
         renderTemplate(exchange, "cookie.html", data);
     }
 
+    private void loginGet(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
+
+        if (employee != null) {
+            redirect303(exchange, "/profile");
+            return;
+        }
+
+        renderLoginPage(exchange, null, "");
+    }
+
+    private void loginPost(HttpExchange exchange) {
+        Map<String, String> form = Utils.parseUrlEncoded(getBody(exchange), "&");
+
+        String email = form.getOrDefault("email", "").trim().toLowerCase();
+        String password = form.getOrDefault("password", "");
+
+        Employee employee = MockData.findEmployeeByEmailAndPassword(email, password);
+
+        if (employee == null) {
+            renderLoginPage(exchange, "User not found or password is incorrect.", email);
+            return;
+        }
+
+        createSession(exchange, employee);
+        redirect303(exchange, "/profile");
+    }
+
+    private void profileGet(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
+
+        if (employee == null) {
+            Employee guest = new Employee(
+                    0,
+                    "unknown@example.com",
+                    "Guest user",
+                    "",
+                    List.of(),
+                    List.of()
+            );
+
+            renderProfilePage(exchange, guest, false);
+            return;
+        }
+
+        renderProfilePage(exchange, employee, true);
+    }
+
+    private void renderLoginPage(HttpExchange exchange, String error, String email) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("error", error);
+        model.put("email", email);
+
+        renderTemplate(exchange, "login.ftl", model);
+    }
+
+    private void renderProfilePage(HttpExchange exchange, Employee employee, boolean authorized) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("employee", employee);
+        model.put("authorized", authorized);
+
+        renderTemplate(exchange, "profile.ftl", model);
+    }
+
     protected Employee getAuthorizedEmployee(HttpExchange exchange) {
         Map<String, String> cookies = Cookie.parse(getCookies(exchange));
-        String sessionId = cookies.get(SESSION_COOKIE_NAME);
+        String sessionId = cookies.get(sessionCookieName);
         return SessionManager.findEmployeeBySessionId(sessionId);
     }
 
     protected void createSession(HttpExchange exchange, Employee employee) {
         String sessionId = SessionManager.createSession(employee);
 
-        Cookie<String> sessionCookie = Cookie.make(SESSION_COOKIE_NAME, sessionId);
-        sessionCookie.setMaxAge(SESSION_MAX_AGE);
+        Cookie<String> sessionCookie = Cookie.make(sessionCookieName, sessionId);
+        sessionCookie.setMaxAge(sessionMaxAge);
         sessionCookie.setHttpOnly(true);
 
         setCookie(exchange, sessionCookie);
@@ -60,11 +129,11 @@ public class Lesson46Server extends Lesson45Server {
 
     protected void removeSession(HttpExchange exchange) {
         Map<String, String> cookies = Cookie.parse(getCookies(exchange));
-        String sessionId = cookies.get(SESSION_COOKIE_NAME);
+        String sessionId = cookies.get(sessionCookieName);
 
         SessionManager.removeSession(sessionId);
 
-        Cookie<String> sessionCookie = Cookie.make(SESSION_COOKIE_NAME, "deleted");
+        Cookie<String> sessionCookie = Cookie.make(sessionCookieName, "deleted");
         sessionCookie.setMaxAge(0);
         sessionCookie.setHttpOnly(true);
 
