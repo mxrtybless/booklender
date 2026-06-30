@@ -13,11 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MockData {
-    private static final String BOOKS_FILE = "src/kg/attractor/java/json/books.json";
-    private static final String EMPLOYEES_FILE = "src/kg/attractor/java/json/employees.json";
+    private static final String booksFile = "src/kg/attractor/java/json/books.json";
+    private static final String employeesFile = "src/kg/attractor/java/json/employees.json";
 
     public static List<Book> getBooks() {
-        try (FileReader reader = new FileReader(BOOKS_FILE)) {
+        try (FileReader reader = new FileReader(booksFile)) {
             Gson gson = new Gson();
             Book[] books = gson.fromJson(reader, Book[].class);
 
@@ -32,7 +32,7 @@ public class MockData {
     }
 
     public static List<Employee> getEmployees() {
-        try (FileReader reader = new FileReader(EMPLOYEES_FILE)) {
+        try (FileReader reader = new FileReader(employeesFile)) {
             Gson gson = new Gson();
             EmployeeJson[] employeeJsons = gson.fromJson(reader, EmployeeJson[].class);
 
@@ -148,6 +148,104 @@ public class MockData {
         return true;
     }
 
+    public static boolean issueBook(int bookId, int employeeId) {
+        List<Book> books = getBooks();
+        List<Employee> employees = getEmployees();
+
+        Book book = findBookById(books, bookId);
+        Employee employee = findEmployeeById(employees, employeeId);
+
+        if (book == null || employee == null) {
+            return false;
+        }
+
+        if (book.isIssued()) {
+            return false;
+        }
+
+        if (employee.getCurrentBooksCount() >= 2) {
+            return false;
+        }
+
+        book.setIssued(true);
+        book.setIssuedTo(employee.getId());
+
+        if (!employeeHasBook(employee.getCurrentBooks(), book.getId())) {
+            employee.getCurrentBooks().add(book);
+        }
+
+        saveBooks(books);
+        saveEmployees(employees);
+        return true;
+    }
+
+    public static boolean returnBook(int bookId, int employeeId) {
+        List<Book> books = getBooks();
+        List<Employee> employees = getEmployees();
+
+        Book book = findBookById(books, bookId);
+        Employee employee = findEmployeeById(employees, employeeId);
+
+        if (book == null || employee == null) {
+            return false;
+        }
+
+        if (!book.isIssued()) {
+            return false;
+        }
+
+        if (book.getIssuedTo() == null || book.getIssuedTo() != employee.getId()) {
+            return false;
+        }
+
+        book.setIssued(false);
+        book.setIssuedTo(null);
+
+        removeBookFromList(employee.getCurrentBooks(), book.getId());
+
+        if (!employeeHasBook(employee.getHistoryBooks(), book.getId())) {
+            employee.getHistoryBooks().add(book);
+        }
+
+        saveBooks(books);
+        saveEmployees(employees);
+        return true;
+    }
+
+    private static Book findBookById(List<Book> books, int id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
+                return book;
+            }
+        }
+
+        return null;
+    }
+
+    private static Employee findEmployeeById(List<Employee> employees, int id) {
+        for (Employee employee : employees) {
+            if (employee.getId() == id) {
+                return employee;
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean employeeHasBook(List<Book> books, int bookId) {
+        for (Book book : books) {
+            if (book.getId() == bookId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void removeBookFromList(List<Book> books, int bookId) {
+        books.removeIf(book -> book.getId() == bookId);
+    }
+
     private static int getNextEmployeeId(List<Employee> employees) {
         int maxId = 0;
 
@@ -182,6 +280,15 @@ public class MockData {
         return books;
     }
 
+    private static void saveBooks(List<Book> books) {
+        try (FileWriter writer = new FileWriter(booksFile)) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(books, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void saveEmployees(List<Employee> employees) {
         List<EmployeeJson> employeeJsons = new ArrayList<>();
 
@@ -196,7 +303,7 @@ public class MockData {
             ));
         }
 
-        try (FileWriter writer = new FileWriter(EMPLOYEES_FILE)) {
+        try (FileWriter writer = new FileWriter(employeesFile)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(employeeJsons, writer);
         } catch (IOException e) {

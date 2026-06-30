@@ -57,6 +57,14 @@ public class Book {
         return issuedTo;
     }
 
+    public void setIssued(boolean issued) {
+        this.issued = issued;
+    }
+
+    public void setIssuedTo(Integer issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
     public String getStatusText() {
         return issued ? "Issued" : "Available";
     }

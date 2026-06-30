@@ -24,6 +24,8 @@ public class Lesson46Server extends Lesson45Server {
         registerGet("/login", this::loginGet);
         registerPost("/login", this::loginPost);
         registerGet("/profile", this::profileGet);
+        registerPost("/issue", this::issueBookPost);
+        registerPost("/return", this::returnBookPost);
     }
 
     private void cookiesHandler(HttpExchange exchange) {
@@ -93,6 +95,36 @@ public class Lesson46Server extends Lesson45Server {
         }
 
         renderProfilePage(exchange, employee, true);
+    }
+
+    private void issueBookPost(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
+
+        if (employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
+
+        Map<String, String> form = Utils.parseUrlEncoded(getBody(exchange), "&");
+        int bookId = Utils.parseIntOrDefault(form.get("bookId"), -1);
+
+        MockData.issueBook(bookId, employee.getId());
+        redirect303(exchange, "/profile");
+    }
+
+    private void returnBookPost(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
+
+        if (employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
+
+        Map<String, String> form = Utils.parseUrlEncoded(getBody(exchange), "&");
+        int bookId = Utils.parseIntOrDefault(form.get("bookId"), -1);
+
+        MockData.returnBook(bookId, employee.getId());
+        redirect303(exchange, "/profile");
     }
 
     private void renderLoginPage(HttpExchange exchange, String error, String email) {
