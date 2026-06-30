@@ -12,6 +12,9 @@
 
     <#if authorized>
         <p><b>You are logged in.</b></p>
+        <p>
+            <a href="/logout">Logout</a>
+        </p>
     <#else>
         <p><b>You are not logged in.</b></p>
         <p>

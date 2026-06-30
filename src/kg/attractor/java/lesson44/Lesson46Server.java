@@ -26,6 +26,7 @@ public class Lesson46Server extends Lesson45Server {
         registerGet("/login", this::loginGet);
         registerPost("/login", this::loginPost);
         registerGet("/profile", this::profileGet);
+        registerGet("/logout", this::logoutGet);
         registerPost("/issue", this::issueBookPost);
         registerPost("/return", this::returnBookPost);
     }
@@ -97,6 +98,11 @@ public class Lesson46Server extends Lesson45Server {
         }
 
         renderProfilePage(exchange, employee, true);
+    }
+
+    private void logoutGet(HttpExchange exchange) {
+        removeSession(exchange);
+        redirect303(exchange, "/login");
     }
 
     private void issueBookPost(HttpExchange exchange) {
