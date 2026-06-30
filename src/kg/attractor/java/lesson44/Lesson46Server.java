@@ -2,12 +2,14 @@ package kg.attractor.java.lesson44;
 
 import com.sun.net.httpserver.HttpExchange;
 import kg.attractor.java.data.MockData;
+import kg.attractor.java.model.Book;
 import kg.attractor.java.model.Employee;
 import kg.attractor.java.server.Cookie;
 import kg.attractor.java.server.SessionManager;
 import kg.attractor.java.server.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,10 +139,25 @@ public class Lesson46Server extends Lesson45Server {
 
     private void renderProfilePage(HttpExchange exchange, Employee employee, boolean authorized) {
         Map<String, Object> model = new HashMap<>();
+
         model.put("employee", employee);
         model.put("authorized", authorized);
+        model.put("availableBooks", getAvailableBooks());
+        model.put("canTakeBooks", authorized && employee.getCurrentBooksCount() < 2);
 
         renderTemplate(exchange, "profile.ftl", model);
+    }
+
+    private List<Book> getAvailableBooks() {
+        List<Book> availableBooks = new ArrayList<>();
+
+        for (Book book : MockData.getBooks()) {
+            if (!book.isIssued()) {
+                availableBooks.add(book);
+            }
+        }
+
+        return availableBooks;
     }
 
     protected Employee getAuthorizedEmployee(HttpExchange exchange) {
