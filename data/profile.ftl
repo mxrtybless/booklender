@@ -15,30 +15,22 @@
         <p>
             <a href="/logout">Logout</a>
         </p>
-    <#else>
-        <p><b>You are not logged in.</b></p>
+
         <p>
-            <a href="/login">Login</a> |
-            <a href="/register">Register</a>
+            <b>ID:</b>
+            ${employee.id}
         </p>
-    </#if>
 
-    <p>
-        <b>ID:</b>
-        ${employee.id}
-    </p>
+        <p>
+            <b>Email:</b>
+            ${employee.email}
+        </p>
 
-    <p>
-        <b>Email:</b>
-        ${employee.email}
-    </p>
+        <p>
+            <b>Name:</b>
+            ${employee.name}
+        </p>
 
-    <p>
-        <b>Name:</b>
-        ${employee.name}
-    </p>
-
-    <#if authorized>
         <h2>Current books</h2>
 
         <#if employee.currentBooks?size == 0>
@@ -132,6 +124,12 @@
                 </#list>
             </table>
         </#if>
+    <#else>
+        <p>You are not logged in.</p>
+        <p>
+            <a href="/login">Login</a> |
+            <a href="/register">Register</a>
+        </p>
     </#if>
 
     <p>

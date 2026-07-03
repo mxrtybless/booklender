@@ -84,16 +84,7 @@ public class Lesson46Server extends Lesson45Server {
         Employee employee = getAuthorizedEmployee(exchange);
 
         if (employee == null) {
-            Employee guest = new Employee(
-                    0,
-                    "unknown@example.com",
-                    "Guest user",
-                    "",
-                    List.of(),
-                    List.of()
-            );
-
-            renderProfilePage(exchange, guest, false);
+            redirect303(exchange, "/login");
             return;
         }
 
