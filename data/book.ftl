@@ -9,6 +9,7 @@
 <p>
     <a href="/books">Back to books</a> |
     <a href="/employees">Employees</a> |
+    <a href="/profile">Profile</a> |
     <a href="/login">Login</a> |
     <a href="/register">Register</a>
 </p>
@@ -47,6 +48,28 @@
         Nobody
     </#if>
 </p>
+
+<#if authorizedEmployee??>
+    <h2>Action</h2>
+
+    <#if canTakeBook>
+        <form method="post" action="/issue">
+            <input type="hidden" name="bookId" value="${book.id}">
+            <button type="submit">Take this book</button>
+        </form>
+    <#elseif canReturnBook>
+        <form method="post" action="/return">
+            <input type="hidden" name="bookId" value="${book.id}">
+            <button type="submit">Return this book</button>
+        </form>
+    <#else>
+        <p>No available action for this book.</p>
+    </#if>
+<#else>
+    <p>
+        <a href="/login">Login</a> to take or return books.
+    </p>
+</#if>
 
 </body>
 </html>
