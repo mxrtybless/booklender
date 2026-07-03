@@ -16,6 +16,18 @@
             <a href="/logout">Logout</a>
         </p>
 
+        <#if messageCode?? && messageCode != "">
+            <#if messageCode == "bookTaken">
+                <p><b>Book was successfully taken.</b></p>
+            <#elseif messageCode == "bookNotTaken">
+                <p><b>Book was not taken. Maybe it is already issued or you already have two books.</b></p>
+            <#elseif messageCode == "bookReturned">
+                <p><b>Book was successfully returned.</b></p>
+            <#elseif messageCode == "bookNotReturned">
+                <p><b>Book was not returned.</b></p>
+            </#if>
+        </#if>
+
         <p>
             <b>ID:</b>
             ${employee.id}
