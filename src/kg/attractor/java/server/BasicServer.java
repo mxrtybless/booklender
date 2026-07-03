@@ -2,11 +2,12 @@ package kg.attractor.java.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 
 public abstract class BasicServer {
 
+    private Configuration freemarker;
+
     private final HttpServer server;
     // путь к каталогу с файлами, которые будет отдавать сервер по запросам клиентов
     private final String dataDir = "data";
@@ -27,20 +30,66 @@ public abstract class BasicServer {
     protected BasicServer(String host, int port) throws IOException {
         server = createServer(host, port);
         registerCommonHandlers();
+        freemarker = initFreeMarker();
     }
 
     private static String makeKey(String method, String route) {
+        route = ensureStartsWithSlash(route);
         return String.format("%s %s", method.toUpperCase(), route);
     }
 
-    private static String makeKey(HttpExchange exchange) {
-        var method = exchange.getRequestMethod();
-        var path = exchange.getRequestURI().getPath();
+    private static String ensureStartsWithSlash(String route) {
+        if (route.startsWith(".")) return route;
 
-        var index = path.lastIndexOf(".");
-        var extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
+        return route.startsWith("/") ? route : "/" + route;
+    }
+
+    private static String makeKey(HttpExchange exchange) {
+        String method = exchange.getRequestMethod();
+        String path = exchange.getRequestURI().getPath();
+
+        if (path.endsWith("/") && path.length() > 1) {
+            path = path.substring(0, path.length() - 1);
+        }
+
+        int index = path.lastIndexOf(".");
+        String extOrPath = index != -1 ? path.substring(index).toLowerCase() : path;
 
         return makeKey(method, extOrPath);
+    }
+
+    private static Configuration initFreeMarker() {
+        try {
+            Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
+            cfg.setDirectoryForTemplateLoading(new File("data"));
+            cfg.setDefaultEncoding("UTF-8");
+            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            cfg.setLogTemplateExceptions(false);
+            cfg.setWrapUncheckedExceptions(true);
+            cfg.setFallbackOnNullLoopVariable(false);
+            return cfg;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
+        try {
+            Template temp = freemarker.getTemplate(templateFile);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+            try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
+                temp.process(dataModel, writer);
+                writer.flush();
+
+                var data = stream.toByteArray();
+
+                sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, data);
+            }
+        } catch (IOException | TemplateException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void setContentType(HttpExchange exchange, ContentType type) {
@@ -74,12 +123,16 @@ public abstract class BasicServer {
         registerFileHandler(".png", ContentType.IMAGE_PNG);
     }
 
+    protected final void registerGenericHandler(String method, String route, RouteHandler handler) {
+        getRoutes().put(makeKey(method, route), handler);
+    }
+
     protected final void registerGet(String route, RouteHandler handler) {
-        getRoutes().put("GET " + route, handler);
+        registerGenericHandler("GET", route, handler);
     }
 
     protected final void registerPost(String route, RouteHandler handler) {
-        getRoutes().put("POST " + route, handler);
+        registerGenericHandler("POST", route, handler);
     }
 
     protected final void registerFileHandler(String fileExt, ContentType type) {

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
-    private final static Configuration freemarker = initFreeMarker();
 
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
@@ -34,20 +33,6 @@ public class Lesson44Server extends BasicServer {
         registerGet("/employee", this::employeeHandler);
     }
 
-    private static Configuration initFreeMarker() {
-        try {
-            Configuration cfg = new Configuration(Configuration.VERSION_2_3_29);
-            cfg.setDirectoryForTemplateLoading(new File("data"));
-            cfg.setDefaultEncoding("UTF-8");
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            cfg.setLogTemplateExceptions(false);
-            cfg.setWrapUncheckedExceptions(true);
-            cfg.setFallbackOnNullLoopVariable(false);
-            return cfg;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private void freemarkerSampleHandler(HttpExchange exchange) {
         renderTemplate(exchange, "sample.html", getSampleDataModel());
@@ -114,24 +99,6 @@ public class Lesson44Server extends BasicServer {
         return Utils.parseIntOrDefault(query.get("id"), -1);
     }
 
-    protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
-        try {
-            Template temp = freemarker.getTemplate(templateFile);
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-            try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-                temp.process(dataModel, writer);
-                writer.flush();
-
-                var data = stream.toByteArray();
-
-                sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, data);
-            }
-        } catch (IOException | TemplateException e) {
-            e.printStackTrace();
-        }
-    }
 
     private SampleDataModel getSampleDataModel() {
         return new SampleDataModel();
