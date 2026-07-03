@@ -12,6 +12,7 @@ public class Lesson47Server extends Lesson46Server {
 
     public Lesson47Server(String host, int port) throws IOException {
         super(host, port);
+        registerGet("/query", this::handleQueryRequest);
     }
 
     protected String getQueryParams(HttpExchange exchange) {
@@ -26,6 +27,7 @@ public class Lesson47Server extends Lesson46Server {
 
         Map<String, Object> data = new HashMap<>();
         data.put("params", params);
+
         renderTemplate(exchange, "query.ftl", data);
     }
 }
