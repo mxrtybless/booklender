@@ -84,20 +84,11 @@ public class Lesson46Server extends Lesson45Server {
         Employee employee = getAuthorizedEmployee(exchange);
 
         if (employee == null) {
-            Employee guest = new Employee(
-                    0,
-                    "unknown@example.com",
-                    "Guest user",
-                    "",
-                    List.of(),
-                    List.of()
-            );
-
-            renderProfilePage(exchange, guest, false);
+            redirect303(exchange, "/login");
             return;
         }
 
-        renderProfilePage(exchange, employee, true);
+        renderProfilePage(exchange, employee, true, getMessageCode(exchange));
     }
 
     private void logoutGet(HttpExchange exchange) {
@@ -116,8 +107,14 @@ public class Lesson46Server extends Lesson45Server {
         Map<String, String> form = Utils.parseUrlEncoded(getBody(exchange), "&");
         int bookId = Utils.parseIntOrDefault(form.get("bookId"), -1);
 
-        MockData.issueBook(bookId, employee.getId());
-        redirect303(exchange, "/profile");
+        boolean result = MockData.issueBook(bookId, employee.getId());
+
+        if (result) {
+            redirect303(exchange, "/profile?message=bookTaken");
+            return;
+        }
+
+        redirect303(exchange, "/profile?message=bookNotTaken");
     }
 
     private void returnBookPost(HttpExchange exchange) {
@@ -131,8 +128,19 @@ public class Lesson46Server extends Lesson45Server {
         Map<String, String> form = Utils.parseUrlEncoded(getBody(exchange), "&");
         int bookId = Utils.parseIntOrDefault(form.get("bookId"), -1);
 
-        MockData.returnBook(bookId, employee.getId());
-        redirect303(exchange, "/profile");
+        boolean result = MockData.returnBook(bookId, employee.getId());
+
+        if (result) {
+            redirect303(exchange, "/profile?message=bookReturned");
+            return;
+        }
+
+        redirect303(exchange, "/profile?message=bookNotReturned");
+    }
+
+    private String getMessageCode(HttpExchange exchange) {
+        Map<String, String> query = Utils.parseUrlEncoded(exchange.getRequestURI().getRawQuery(), "&");
+        return query.getOrDefault("message", "");
     }
 
     private void renderLoginPage(HttpExchange exchange, String error, String email) {
@@ -143,13 +151,14 @@ public class Lesson46Server extends Lesson45Server {
         renderTemplate(exchange, "login.ftl", model);
     }
 
-    private void renderProfilePage(HttpExchange exchange, Employee employee, boolean authorized) {
+    private void renderProfilePage(HttpExchange exchange, Employee employee, boolean authorized, String messageCode) {
         Map<String, Object> model = new HashMap<>();
 
         model.put("employee", employee);
         model.put("authorized", authorized);
         model.put("availableBooks", getAvailableBooks());
         model.put("canTakeBooks", authorized && employee.getCurrentBooksCount() < 2);
+        model.put("messageCode", messageCode);
 
         renderTemplate(exchange, "profile.ftl", model);
     }

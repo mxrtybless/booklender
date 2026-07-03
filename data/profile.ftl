@@ -15,30 +15,34 @@
         <p>
             <a href="/logout">Logout</a>
         </p>
-    <#else>
-        <p><b>You are not logged in.</b></p>
+
+        <#if messageCode?? && messageCode != "">
+            <#if messageCode == "bookTaken">
+                <p><b>Book was successfully taken.</b></p>
+            <#elseif messageCode == "bookNotTaken">
+                <p><b>Book was not taken. Maybe it is already issued or you already have two books.</b></p>
+            <#elseif messageCode == "bookReturned">
+                <p><b>Book was successfully returned.</b></p>
+            <#elseif messageCode == "bookNotReturned">
+                <p><b>Book was not returned.</b></p>
+            </#if>
+        </#if>
+
         <p>
-            <a href="/login">Login</a> |
-            <a href="/register">Register</a>
+            <b>ID:</b>
+            ${employee.id}
         </p>
-    </#if>
 
-    <p>
-        <b>ID:</b>
-        ${employee.id}
-    </p>
+        <p>
+            <b>Email:</b>
+            ${employee.email}
+        </p>
 
-    <p>
-        <b>Email:</b>
-        ${employee.email}
-    </p>
+        <p>
+            <b>Name:</b>
+            ${employee.name}
+        </p>
 
-    <p>
-        <b>Name:</b>
-        ${employee.name}
-    </p>
-
-    <#if authorized>
         <h2>Current books</h2>
 
         <#if employee.currentBooks?size == 0>
@@ -132,6 +136,12 @@
                 </#list>
             </table>
         </#if>
+    <#else>
+        <p>You are not logged in.</p>
+        <p>
+            <a href="/login">Login</a> |
+            <a href="/register">Register</a>
+        </p>
     </#if>
 
     <p>
