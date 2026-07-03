@@ -16,6 +16,10 @@
 <h1>${book.title}</h1>
 
 <p>
+    <img src="${book.image}" alt="${book.title}" width="220">
+</p>
+
+<p>
     <b>ID:</b>
     ${book.id}
 </p>

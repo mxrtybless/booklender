@@ -4,7 +4,7 @@
     "title": "Clean Code",
     "author": "Robert Martin",
     "description": "Book about writing clean and maintainable code.",
-    "image": "/images/1.jpg",
+    "image": "/images/clean-code.jpg",
     "issued": false,
     "issuedTo": null
   },
@@ -13,7 +13,7 @@
     "title": "Effective Java",
     "author": "Joshua Bloch",
     "description": "Collection of Java best practices.",
-    "image": "/images/2.jpg",
+    "image": "/images/effective-java.jpg",
     "issued": true,
     "issuedTo": 1
   },
@@ -22,7 +22,7 @@
     "title": "Spring in Action",
     "author": "Craig Walls",
     "description": "Guide to Spring Framework.",
-    "image": "/images/3.jpg",
+    "image": "/images/spring-in-action.jpg",
     "issued": false,
     "issuedTo": null
   }
